@@ -1,0 +1,28 @@
+nodes:
+  - id: validate_input
+    type: function
+  - id: check_eligibility
+    type: function
+  - id: route_decision
+    type: conditional
+  - id: notify_user
+    type: function
+  - id: admin_override
+    type: function
+  - id: log_result
+    type: function
+
+edges:
+  - from: validate_input
+    to: check_eligibility
+  - from: check_eligibility
+    to: route_decision
+  - from: route_decision
+    to: admin_override
+    condition: "state.get('user_role') == 'admin'"
+  - from: route_decision
+    to: notify_user
+    condition: "state.get('eligible') is True and state.get('user_role') != 'admin'"
+  - from: route_decision
+    to: log_result
+    condition: "state.get('eligible') is False and state.get('user_role') != 'admin'"
