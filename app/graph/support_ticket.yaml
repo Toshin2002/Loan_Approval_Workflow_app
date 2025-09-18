@@ -1,0 +1,28 @@
+nodes:
+  - id: validate_ticket
+    type: function
+  - id: categorize_issue
+    type: function
+  - id: route_ticket
+    type: conditional
+  - id: escalate_to_admin
+    type: function
+  - id: assign_to_agent
+    type: function
+  - id: close_ticket
+    type: function
+
+edges:
+  - from: validate_ticket
+    to: categorize_issue
+  - from: categorize_issue
+    to: route_ticket
+  - from: route_ticket
+    to: escalate_to_admin
+    condition: "state.get('priority') == 'high'"
+  - from: route_ticket
+    to: assign_to_agent
+    condition: "state.get('priority') == 'medium'"
+  - from: route_ticket
+    to: close_ticket
+    condition: "state.get('priority') == 'low'"
